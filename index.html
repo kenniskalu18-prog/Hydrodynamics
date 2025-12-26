@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluid Mechanics & Hydrodynamics | PHY 101-CM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6A11CB;
+            --secondary: #2575FC;
+            --accent: #FF2E93;
+            --light: #F0F4FF;
+            --dark: #2D0B5F;
+            --success: #00E5FF;
+            --warning: #FFD166;
+            --text: #1A1A2E;
+            --bg-light: #f8f9ff;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 0;
+            max-width: 100%;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: linear-gradient(-45deg, #6A11CB, #2575FC, #00E5FF, #FF2E93);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Floating background elements */
+        .floating-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.15;
+            color: var(--primary);
+            font-size: 24px;
+            animation: float 20s infinite linear;
+        }
+        
+        .floating-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 46, 147, 0.1);
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 8px solid var(--accent);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(37, 117, 252, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 46, 147, 0.2) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            background: linear-gradient(45deg, var(--success), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            padding: 0 10px;
+            word-wrap: break-word;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            padding: 0 10px;
+            font-weight: 300;
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin: 30px 0 20px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--secondary);
+            position: relative;
+            font-size: 1.8rem;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--accent);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 25px 0 15px;
+            font-size: 1.5rem;
+        }
+        
+        h4 {
+            color: var(--primary);
+            margin: 18px 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .content-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 30px 0;
+            width: 100%;
+        }
+        
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid var(--secondary);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            backdrop-filter: blur(5px);
+        }
+        
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .intro-card {
+            background: linear-gradient(135deg, rgba(240, 244, 255, 0.95), rgba(224, 234, 255, 0.95));
+            border-left: 5px solid var(--accent);
+        }
+        
+        .definition-box {
+            background: linear-gradient(135deg, #E0F7FF, #B3E5FC);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid var(--success);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .formula-box {
+            background: linear-gradient(135deg, #F3E5F5, #E1BEE7);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Cambria Math', serif;
+            font-size: 1.1rem;
+            border-left: 5px solid var(--primary);
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .example-box {
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            border-left: 5px solid var(--success);
+            font-size: 1rem;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .concept-box {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid var(--warning);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .step-box {
+            background: linear-gradient(135deg, #E0F2F1, #B2DFDB);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid #009688;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .principle-box {
+            background: linear-gradient(135deg, #E8EAF6, #C5CAE9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        
+        .diagram-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        
+        .diagram {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 0.95rem;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+        
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            margin: 10px 5px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #00B8D4);
+        }
+        
+        .quiz-section {
+            background: linear-gradient(135deg, rgba(240, 244, 255, 0.95), rgba(224, 234, 255, 0.95));
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid var(--secondary);
+            width: 100%;
+        }
+        
+        .quiz-instructions {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid var(--warning);
+        }
+        
+        .quiz-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        
+        .timer {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--accent);
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            padding: 12px;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent);
+        }
+        
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f9f9ff;
+            border-radius: 10px;
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .options {
+            margin-left: 0;
+        }
+        
+        .option {
+            margin: 12px 0;
+            padding: 15px;
+            background-color: #f5f7ff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        
+        .option:hover {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .option.selected {
+            background-color: #bbdefb;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .option.correct {
+            background-color: #c8e6c9;
+            border-left: 4px solid var(--success);
+        }
+        
+        .option.incorrect {
+            background-color: #ffcdd2;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .results {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #E8F5E9, #C8E6C9);
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 5px solid var(--success);
+            width: 100%;
+        }
+        
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--success);
+            margin: 15px 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .feedback {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .strength {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .improvement {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .resource-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 6px solid var(--accent);
+            width: 100%;
+        }
+        
+        .creator-link {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1rem;
+            color: var(--text);
+        }
+        
+        .creator-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .creator-link a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        /* Step-by-step solution styling */
+        .solution-step {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9ff;
+            border-radius: 5px;
+            border-left: 3px solid var(--secondary);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--secondary);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        /* Visual aid styling */
+        .visual-aid {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px dashed var(--secondary);
+            text-align: center;
+        }
+        
+        .aid-title {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        /* Tablet styles */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 720px;
+                padding: 0 20px;
+            }
+            
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            h3 {
+                font-size: 1.7rem;
+            }
+            
+            .card {
+                padding: 30px;
+            }
+            
+            .content-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            
+            .wide-card {
+                grid-column: 1 / -1;
+            }
+            
+            table {
+                font-size: 1rem;
+                display: table;
+                overflow-x: visible;
+                white-space: normal;
+            }
+        }
+        
+        /* Desktop styles */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 960px;
+            }
+            
+            h1 {
+                font-size: 3.2rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 35px;
+            }
+            
+            .card {
+                padding: 30px;
+            }
+        }
+        
+        /* Large desktop styles */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+        
+        /* Small mobile adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            header {
+                padding: 20px 0;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                display: block;
+                width: 100%;
+                margin: 8px 0;
+            }
+            
+            .resource-links {
+                flex-direction: column;
+            }
+        }
+        
+        /* Prevent horizontal scrolling */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        /* Ensure all content fits within viewport */
+        img, table, .formula-box, .example-box {
+            max-width: 100%;
+        }
+        
+        /* Improve text readability on small screens */
+        p, li, td {
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 767px) {
+            p, li, td {
+                font-size: 1rem;
+            }
+        }
+        
+        /* Highlight important formulas */
+        .important-formula {
+            background: linear-gradient(135deg, #FFFDE7, #FFF9C4);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid var(--warning);
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated gradient background -->
+    <div class="gradient-bg"></div>
+    
+    <!-- Floating background elements -->
+    <div class="floating-bg" id="floatingBg"></div>
+    
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-water"></i>
+            </div>
+            <h1>Fluid Mechanics & Hydrodynamics</h1>
+            <p class="tagline">PHY 101-CM | 2024/2025 Academic Year</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="content-grid">
+            <section class="card intro-card wide-card">
+                <h2>Welcome to Fluid Mechanics!</h2>
+                <p>This comprehensive resource will guide you through the fascinating world of fluid mechanics and hydrodynamics. Get ready to explore:</p>
+                <ul>
+                    <li>Streamline vs. Turbulent Flow</li>
+                    <li>Reynolds Number and its significance</li>
+                    <li>Equation of Continuity and Flow Rate</li>
+                    <li>Bernoulli's Principle and its applications</li>
+                    <li>Viscosity and its effects on fluid flow</li>
+                    <li>Practical examples and calculations</li>
+                </ul>
+                <div class="visual-aid">
+                    <div class="aid-title">Fluid Flow Visualization</div>
+                    <p>Fluids can flow in two main ways: smooth streamline flow or chaotic turbulent flow. The transition between these depends on fluid properties and flow conditions.</p>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>I. Stream Flow and Types</h2>
+                
+                <div class="definition-box">
+                    <p><strong>Streamflow</strong> refers to the characteristics that determine how water moves in a stream channel. It's influenced by the source and physical objects present in the stream.</p>
+                </div>
+                
+                <h3>Two Main Types of Fluid Flow:</h3>
+                
+                <div class="step-box">
+                    <h4>A. Streamline/Laminar Flow</h4>
+                    <ul>
+                        <li>Fluid flows in parallel layers with no disruption between them</li>
+                        <li>Fluid particles follow straight paths parallel to pipe walls</li>
+                        <li>Every point in the fluid follows the same path as preceding particles</li>
+                        <li>Velocity at a given point remains constant with time</li>
+                    </ul>
+                    <div class="visual-aid">
+                        <div class="aid-title">Laminar Flow Visualization</div>
+                        <p>Imagine dye injected into a slowly flowing fluid - it forms a smooth, continuous line without mixing.</p>
+                    </div>
+                </div>
+                
+                <div class="step-box">
+                    <h4>B. Turbulent Flow</h4>
+                    <ul>
+                        <li>Flow paths are irregular and chaotic</li>
+                        <li>Local currents develop throughout the fluid</li>
+                        <li>Fluid particles move in zig-zag, irregular patterns</li>
+                        <li>Swirls (eddies) form, causing high energy loss</li>
+                    </ul>
+                    <div class="visual-aid">
+                        <div class="aid-title">Turbulent Flow Visualization</div>
+                        <p>Think of whitewater rapids or smoke rising from a cigarette - chaotic, mixing motion.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>II. Reynolds Number (Re)</h2>
+                
+                <div class="definition-box">
+                    <p>The <strong>Reynolds Number</strong> is a dimensionless quantity that represents the ratio of inertial forces to viscous forces in a fluid flow. It predicts whether flow will be laminar or turbulent.</p>
+                </div>
+                
+                <div class="important-formula">
+                    Reynolds Number Formula:<br>
+                    Re = (d × v × ρ) / η<br>
+                    or Re = (2r × v × ρ) / η
+                </div>
+                
+                <div class="formula-box">
+                    <p><strong>Where:</strong></p>
+                    <ul>
+                        <li>d = diameter of pipe (m)</li>
+                        <li>r = radius of pipe (m)</li>
+                        <li>v = velocity of fluid (m/s)</li>
+                        <li>ρ = density of fluid (kg/m³)</li>
+                        <li>η = dynamic viscosity (Ns/m²)</li>
+                    </ul>
+                </div>
+                
+                <h3>Flow Classification by Reynolds Number:</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reynolds Number Range</th>
+                            <th>Flow Type</th>
+                            <th>Characteristics</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Re < 2000</td>
+                            <td>Laminar Flow</td>
+                            <td>Smooth, orderly, parallel layers</td>
+                        </tr>
+                        <tr>
+                            <td>2000 ≤ Re ≤ 4000</td>
+                            <td>Transitional Flow</td>
+                            <td>Unstable, may be laminar or turbulent</td>
+                        </tr>
+                        <tr>
+                            <td>Re > 4000</td>
+                            <td>Turbulent Flow</td>
+                            <td>Chaotic, mixing, high energy loss</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3>Solved Example 1: Calculating Reynolds Number</h3>
+                <div class="example-box">
+                    <p><strong>Problem:</strong> Calculate Reynolds number for a fluid with viscosity 0.4 Ns/m² and density 900 kg/m³ flowing through a 20 mm pipe at 2.5 m/s.</p>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">1</span> Convert pipe diameter to meters: d = 20 mm = 0.02 m
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">2</span> Write down given values:
+                        <ul>
+                            <li>η = 0.4 Ns/m²</li>
+                            <li>ρ = 900 kg/m³</li>
+                            <li>d = 0.02 m</li>
+                            <li>v = 2.5 m/s</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">3</span> Apply Reynolds number formula:
+                        <p>Re = (d × v × ρ) / η</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">4</span> Substitute values:
+                        <p>Re = (0.02 × 2.5 × 900) / 0.4</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">5</span> Calculate:
+                        <p>Re = (45) / 0.4 = 112.5</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">6</span> Interpretation:
+                        <p>Since Re = 112.5 < 2000, the flow is <strong>laminar</strong>.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>III. Viscosity and Stream Flow</h2>
+                
+                <div class="definition-box">
+                    <p><strong>Viscosity</strong> is a fluid property that describes its resistance to flow. It's essentially the internal friction of a fluid.</p>
+                </div>
+                
+                <div class="formula-box">
+                    <p>Viscosity Formula: η = (F × d) / (A × v)</p>
+                    <p><strong>Where:</strong></p>
+                    <ul>
+                        <li>F = force applied (N)</li>
+                        <li>d = distance between plates (m)</li>
+                        <li>A = area of plates (m²)</li>
+                        <li>v = velocity (m/s)</li>
+                        <li>η = viscosity (Ns/m² or Pa·s)</li>
+                    </ul>
+                </div>
+                
+                <h3>Effect of Viscosity on Flow Type:</h3>
+                <div class="step-box">
+                    <h4>High Viscosity (e.g., Honey)</h4>
+                    <ul>
+                        <li>Increases tendency for laminar flow</li>
+                        <li>Resists transition to turbulence</li>
+                        <li>Higher internal friction between fluid layers</li>
+                    </ul>
+                </div>
+                
+                <div class="step-box">
+                    <h4>Low Viscosity (e.g., Water)</h4>
+                    <ul>
+                        <li>Increases tendency for turbulent flow</li>
+                        <li>Easier transition to turbulence</li>
+                        <li>Lower internal friction between fluid layers</li>
+                    </ul>
+                </div>
+                
+                <h3>Solved Example 2: Viscosity Calculation</h3>
+                <div class="example-box">
+                    <p><strong>Problem:</strong> A force of 2 N is applied to move a plate of area 0.5 m² at a velocity of 1 m/s over a fluid layer 0.01 m thick. Calculate the fluid viscosity.</p>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">1</span> Write down given values:
+                        <ul>
+                            <li>F = 2 N</li>
+                            <li>A = 0.5 m²</li>
+                            <li>v = 1 m/s</li>
+                            <li>d = 0.01 m</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">2</span> Apply viscosity formula:
+                        <p>η = (F × d) / (A × v)</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">3</span> Substitute values:
+                        <p>η = (2 × 0.01) / (0.5 × 1)</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">4</span> Calculate:
+                        <p>η = 0.02 / 0.5 = 0.04 Ns/m²</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">5</span> Interpretation:
+                        <p>The fluid viscosity is 0.04 Ns/m² (water has viscosity ~0.001 Ns/m², so this fluid is more viscous than water).</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>IV. Equation of Continuity and Flow Rate</h2>
+                
+                <div class="principle-box">
+                    <p><strong>Principle of Continuity:</strong> For an incompressible fluid in steady flow, the mass flow rate must remain constant throughout the pipe.</p>
+                </div>
+                
+                <div class="important-formula">
+                    Equation of Continuity:<br>
+                    A₁v₁ = A₂v₂ = constant
+                </div>
+                
+                <div class="formula-box">
+                    <p><strong>Where:</strong></p>
+                    <ul>
+                        <li>A₁, A₂ = cross-sectional areas at points 1 and 2 (m²)</li>
+                        <li>v₁, v₂ = fluid velocities at points 1 and 2 (m/s)</li>
+                    </ul>
+                </div>
+                
+                <h3>Volume Flow Rate (Q):</h3>
+                <div class="formula-box">
+                    <p>Q = A × v = Volume/time (m³/s)</p>
+                    <p>Volume flow rate is constant for incompressible fluids in steady flow.</p>
+                </div>
+                
+                <h3>Mass Flow Rate:</h3>
+                <div class="formula-box">
+                    <p>ṁ = ρ × A × v = ρ × Q (kg/s)</p>
+                    <p>Mass flow rate remains constant for steady flow of any fluid.</p>
+                </div>
+                
+                <h3>Solved Example 3: Continuity Equation Application</h3>
+                <div class="example-box">
+                    <p><strong>Problem:</strong> Water flows through a pipe that narrows from diameter 10 cm to 5 cm. If the velocity in the wide section is 2 m/s, what is the velocity in the narrow section?</p>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">1</span> Convert diameters to radii:
+                        <ul>
+                            <li>r₁ = 10 cm / 2 = 5 cm = 0.05 m</li>
+                            <li>r₂ = 5 cm / 2 = 2.5 cm = 0.025 m</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">2</span> Calculate cross-sectional areas:
+                        <ul>
+                            <li>A₁ = πr₁² = π × (0.05)² = 0.00785 m²</li>
+                            <li>A₂ = πr₂² = π × (0.025)² = 0.00196 m²</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">3</span> Apply continuity equation: A₁v₁ = A₂v₂
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">4</span> Solve for v₂:
+                        <p>v₂ = (A₁v₁) / A₂ = (0.00785 × 2) / 0.00196</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">5</span> Calculate:
+                        <p>v₂ = 0.0157 / 0.00196 = 8 m/s</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">6</span> Interpretation:
+                        <p>The velocity increases from 2 m/s to 8 m/s as the pipe narrows (4 times faster).</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>V. Bernoulli's Principle and Equation</h2>
+                
+                <div class="principle-box">
+                    <p><strong>Bernoulli's Principle:</strong> For an ideal fluid in steady flow, an increase in fluid velocity occurs simultaneously with a decrease in pressure or a decrease in the fluid's potential energy.</p>
+                </div>
+                
+                <div class="important-formula">
+                    Bernoulli's Equation:<br>
+                    P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂ = constant
+                </div>
+                
+                <div class="formula-box">
+                    <p><strong>Where:</strong></p>
+                    <ul>
+                        <li>P = pressure (Pa or N/m²)</li>
+                        <li>ρ = density (kg/m³)</li>
+                        <li>v = velocity (m/s)</li>
+                        <li>g = acceleration due to gravity (9.8 m/s²)</li>
+                        <li>h = height above reference level (m)</li>
+                    </ul>
+                </div>
+                
+                <h3>Key Applications of Bernoulli's Principle:</h3>
+                <div class="step-box">
+                    <h4>1. Venturi Effect</h4>
+                    <p>When fluid flows through a constriction, its velocity increases and pressure decreases.</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>2. Airplane Wings</h4>
+                    <p>Air travels faster over the curved upper surface, creating lower pressure and lift.</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>3. Atomizers and Spray Bottles</h4>
+                    <p>Fast-moving air creates low pressure, drawing liquid up and breaking it into spray.</p>
+                </div>
+                
+                <h3>Solved Example 4: Bernoulli's Equation Application</h3>
+                <div class="example-box">
+                    <p><strong>Problem:</strong> Water flows through a horizontal pipe. At a wide section, pressure is 3.0×10⁵ Pa and velocity is 4 m/s. At a narrow section, velocity is 16 m/s. Calculate pressure at the narrow section (ρ_water = 1000 kg/m³).</p>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">1</span> Write down given values:
+                        <ul>
+                            <li>P₁ = 3.0×10⁵ Pa</li>
+                            <li>v₁ = 4 m/s</li>
+                            <li>v₂ = 16 m/s</li>
+                            <li>ρ = 1000 kg/m³</li>
+                            <li>Pipe is horizontal, so h₁ = h₂</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">2</span> Apply Bernoulli's equation for horizontal pipe:
+                        <p>P₁ + ½ρv₁² = P₂ + ½ρv₂²</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">3</span> Rearrange to solve for P₂:
+                        <p>P₂ = P₁ + ½ρ(v₁² - v₂²)</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">4</span> Substitute values:
+                        <p>P₂ = 3.0×10⁵ + ½×1000×(4² - 16²)</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">5</span> Calculate squares:
+                        <p>P₂ = 3.0×10⁵ + 500×(16 - 256)</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">6</span> Complete calculation:
+                        <p>P₂ = 3.0×10⁵ + 500×(-240) = 3.0×10⁵ - 120000 = 1.8×10⁵ Pa</p>
+                    </div>
+                    
+                    <div class="solution-step">
+                        <span class="step-number">7</span> Interpretation:
+                        <p>Pressure decreases from 3.0×10⁵ Pa to 1.8×10⁵ Pa as velocity increases, confirming Bernoulli's principle.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>VI. Ideal Fluid Assumptions</h2>
+                
+                <div class="definition-box">
+                    <p>An <strong>ideal fluid</strong> is a theoretical model that simplifies fluid dynamics calculations by assuming:</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>1. Non-viscous (No internal friction)</h4>
+                    <p>No resistance between fluid layers; viscosity η = 0</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>2. Incompressible (Constant density)</h4>
+                    <p>Density ρ remains constant regardless of pressure changes</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>3. Steady Flow (Non-turbulent)</h4>
+                    <p>Velocity, density, and pressure at each point remain constant over time</p>
+                </div>
+                
+                <div class="step-box">
+                    <h4>4. Irrotational Flow</h4>
+                    <p>Fluid has no angular momentum about any point; no turbulence</p>
+                </div>
+                
+                <div class="visual-aid">
+                    <div class="aid-title">Real vs. Ideal Fluids</div>
+                    <p>Real fluids have viscosity and can be compressible, but the ideal fluid model provides useful approximations for many engineering applications.</p>
+                </div>
+            </section>
+            
+            <section class="card">
+                <h2>Practice Problems ✍️</h2>
+                
+                <div class="example-box">
+                    <p><strong>Problem 1:</strong> Oil (ρ = 800 kg/m³, η = 0.1 Ns/m²) flows through a 0.1 m diameter pipe at 3 m/s. Calculate the Reynolds number and determine flow type.</p>
+                    <div class="solution-step">
+                        <span class="step-number">Soln:</span> Re = (0.1 × 3 × 800) / 0.1 = 2400 (Transitional flow)
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <p><strong>Problem 2:</strong> A pipe narrows from 0.2 m² to 0.05 m². If flow rate is 0.4 m³/s, find velocities in both sections.</p>
+                    <div class="solution-step">
+                        <span class="step-number">Soln:</span> v₁ = Q/A₁ = 0.4/0.2 = 2 m/s; v₂ = Q/A₂ = 0.4/0.05 = 8 m/s
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <p><strong>Problem 3:</strong> Water flows through a pipe with velocity 5 m/s and pressure 2×10⁵ Pa. If it rises 10 m, find new pressure (ignore velocity change).</p>
+                    <div class="solution-step">
+                        <span class="step-number">Soln:</span> P₂ = P₁ - ρgh = 2×10⁵ - (1000×9.8×10) = 1.02×10⁵ Pa
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <p><strong>Problem 4:</strong> Calculate force needed to pull a 0.2 m² plate at 0.5 m/s over a 0.005 m thick oil layer (η = 0.08 Ns/m²).</p>
+                    <div class="solution-step">
+                        <span class="step-number">Soln:</span> F = (η × A × v) / d = (0.08 × 0.2 × 0.5) / 0.005 = 1.6 N
+                    </div>
+                </div>
+                
+                <div class="example-box">
+                    <p><strong>Problem 5:</strong> Blood flows through aorta (radius 1 cm) at 30 cm/s. If capillaries have total area 1000× aorta area, find capillary velocity.</p>
+                    <div class="solution-step">
+                        <span class="step-number">Soln:</span> A₁v₁ = A₂v₂ → v₂ = (A₁v₁)/A₂ = v₁/1000 = 0.03 cm/s
+                    </div>
+                </div>
+            </section>
+            
+            <section class="card">
+                <h2>Key Concepts Recap</h2>
+                
+                <div class="concept-box">
+                    <h3>Reynolds Number (Re)</h3>
+                    <p>Re < 2000: Laminar | 2000-4000: Transitional | Re > 4000: Turbulent</p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>Continuity Equation</h3>
+                    <p>A₁v₁ = A₂v₂ = constant (for incompressible fluids)</p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>Bernoulli's Equation</h3>
+                    <p>P + ½ρv² + ρgh = constant (energy conservation)</p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>Viscosity (η)</h3>
+                    <p>Resistance to flow; η = (F×d)/(A×v)</p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>Ideal Fluid</h3>
+                    <p>Non-viscous, incompressible, steady, irrotational flow</p>
+                </div>
+            </section>
+            
+            <section class="card wide-card">
+                <h2>Learning Resources</h2>
+                <p>Enhance your understanding with these video resources:</p>
+                
+                <div class="resource-links">
+                    <a href="https://youtu.be/k_eNLvijR0o?si=4deBywo1t54CM041" class="btn" target="_blank">
+                        <i class="fab fa-youtube"></i> Fluid Mechanics Basics
+                    </a>
+                    <a href="https://youtu.be/jiDxUmSAlxg?si=mPDXwSu6LpQNIiZm" class="btn" target="_blank">
+                        <i class="fab fa-youtube"></i> Bernoulli's Principle Explained
+                    </a>
+                </div>
+                
+                <div class="creator-link">
+                    <p>Tutor: Kennis | Year: 2025</p>
+                    <p>Need help with Fluid Mechanics? <a href="https://wa.me/qr/5XXPE2NTKQGSO1" target="_blank">Contact me on WhatsApp</a></p>
+                </div>
+            </section>
+        </div>
+        
+        <section class="quiz-section wide-card">
+            <h2>Quiz Time! 🧠</h2>
+            <p>Test your knowledge with 20 questions about Fluid Mechanics!</p>
+            
+            <div class="quiz-instructions">
+                <h3><i class="fas fa-info-circle"></i> Quiz Instructions</h3>
+                <p><strong>Topic:</strong> Fluid Mechanics & Hydrodynamics</p>
+                <p><strong>Duration:</strong> 20 minutes ⏱️</p>
+                <p><strong>Questions:</strong> 20 multiple-choice questions</p>
+                <p>After submission, you'll receive detailed feedback with your score, percentage, and personalized analysis.</p>
+                <p><strong>Remember:</strong> This is a learning tool to help you identify strengths and areas for improvement.</p>
+            </div>
+            
+            <button id="startQuiz" class="btn">
+                <i class="fas fa-play"></i> Start Quiz Now
+            </button>
+            
+            <div id="quizContainer" class="quiz-container hidden">
+                <div class="timer" id="timer">20:00</div>
+                
+                <div id="questions">
+                    <!-- Questions will be inserted here by JavaScript -->
+                </div>
+                
+                <button id="submitQuiz" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i> Submit Quiz
+                </button>
+            </div>
+            
+            <div id="results" class="results hidden">
+                <!-- Results will be displayed here -->
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Fluid Mechanics Learning Resource &copy; 2025</p>
+            <p>PHY 101-CM | Designed with <i class="fas fa-heart" style="color: #FF2E93;"></i> for Physics Students</p>
+        </div>
+    </footer>
+
+    <script>
+        // Create floating background elements
+        function createFloatingElements() {
+            const floatingBg = document.getElementById('floatingBg');
+            const physicsIcons = [
+                'fa-water', 'fa-tint', 'fa-wind', 'fa-fan', 
+                'fa-compress-arrows-alt', 'fa-ruler-combined', 'fa-vial',
+                'fa-flask', 'fa-atom', 'fa-temperature-low', 'fa-weight-hanging'
+            ];
+            
+            // Create floating icons
+            for (let i = 0; i < 25; i++) {
+                const icon = document.createElement('i');
+                icon.className = `floating-element fas ${physicsIcons[Math.floor(Math.random() * physicsIcons.length)]}`;
+                icon.style.left = `${Math.random() * 100}%`;
+                icon.style.animationDelay = `${Math.random() * 20}s`;
+                icon.style.fontSize = `${Math.random() * 25 + 15}px`;
+                floatingBg.appendChild(icon);
+            }
+            
+            // Create floating bubbles
+            for (let i = 0; i < 20; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'floating-bubble';
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.animationDelay = `${Math.random() * 15}s`;
+                bubble.style.width = `${Math.random() * 50 + 15}px`;
+                bubble.style.height = bubble.style.width;
+                floatingBg.appendChild(bubble);
+            }
+        }
+        
+        // Initialize floating elements
+        createFloatingElements();
+
+        // Quiz questions array (20 questions)
+        const quizQuestions = [
+            {
+                question: "What is the Reynolds number used to predict?",
+                options: [
+                    "Fluid density",
+                    "Flow rate",
+                    "Whether flow is laminar or turbulent",
+                    "Fluid pressure"
+                ],
+                correct: 2,
+                explanation: "The Reynolds number predicts whether fluid flow will be laminar (Re < 2000) or turbulent (Re > 4000)."
+            },
+            {
+                question: "For an incompressible fluid in steady flow, what remains constant according to the continuity equation?",
+                options: [
+                    "Pressure",
+                    "Velocity",
+                    "Cross-sectional area",
+                    "Volume flow rate"
+                ],
+                correct: 3,
+                explanation: "For incompressible fluids in steady flow, the volume flow rate (A × v) remains constant throughout the pipe."
+            },
+            {
+                question: "According to Bernoulli's principle, what happens when fluid velocity increases?",
+                options: [
+                    "Pressure increases",
+                    "Pressure decreases",
+                    "Density increases",
+                    "Temperature increases"
+                ],
+                correct: 1,
+                explanation: "Bernoulli's principle states that an increase in fluid velocity occurs simultaneously with a decrease in pressure."
+            },
+            {
+                question: "Which of these fluids would most likely exhibit laminar flow in a pipe?",
+                options: [
+                    "Water at high velocity",
+                    "Air at high velocity",
+                    "Honey at low velocity",
+                    "Gasoline at moderate velocity"
+                ],
+                correct: 2,
+                explanation: "Honey has high viscosity, which promotes laminar flow, especially at low velocities."
+            },
+            {
+                question: "What is the formula for Reynolds number?",
+                options: [
+                    "Re = (v × ρ) / η",
+                    "Re = (d × v × ρ) / η",
+                    "Re = (A × v) / η",
+                    "Re = (P × v) / ρ"
+                ],
+                correct: 1,
+                explanation: "Reynolds number = (diameter × velocity × density) / viscosity."
+            },
+            {
+                question: "In the equation A₁v₁ = A₂v₂, what does 'A' represent?",
+                options: [
+                    "Acceleration",
+                    "Area",
+                    "Amplitude",
+                    "Altitude"
+                ],
+                correct: 1,
+                explanation: "In the continuity equation, A represents the cross-sectional area of the pipe."
+            },
+            {
+                question: "Which assumption is NOT made for an ideal fluid?",
+                options: [
+                    "Non-viscous",
+                    "Incompressible",
+                    "Turbulent",
+                    "Steady flow"
+                ],
+                correct: 2,
+                explanation: "Ideal fluids are assumed to have steady (non-turbulent) flow, not turbulent flow."
+            },
+            {
+                question: "What happens to fluid velocity when a pipe narrows?",
+                options: [
+                    "It decreases",
+                    "It increases",
+                    "It remains constant",
+                    "It becomes zero"
+                ],
+                correct: 1,
+                explanation: "According to the continuity equation, velocity increases when cross-sectional area decreases (and vice versa)."
+            },
+            {
+                question: "Which term in Bernoulli's equation represents kinetic energy per unit volume?",
+                options: [
+                    "P",
+                    "ρgh",
+                    "½ρv²",
+                    "ηv"
+                ],
+                correct: 2,
+                explanation: "½ρv² represents kinetic energy per unit volume in Bernoulli's equation."
+            },
+            {
+                question: "What is the flow type when Reynolds number is 2500?",
+                options: [
+                    "Laminar",
+                    "Turbulent",
+                    "Transitional",
+                    "Cannot be determined"
+                ],
+                correct: 2,
+                explanation: "Re between 2000-4000 indicates transitional flow (may be laminar or turbulent)."
+            },
+            {
+                question: "Which principle explains how airplane wings generate lift?",
+                options: [
+                    "Pascal's principle",
+                    "Archimedes' principle",
+                    "Bernoulli's principle",
+                    "Continuity principle"
+                ],
+                correct: 2,
+                explanation: "Bernoulli's principle explains lift: faster air over the wing creates lower pressure above than below."
+            },
+            {
+                question: "What does viscosity measure?",
+                options: [
+                    "Fluid density",
+                    "Resistance to flow",
+                    "Fluid pressure",
+                    "Flow rate"
+                ],
+                correct: 1,
+                explanation: "Viscosity measures a fluid's resistance to flow (internal friction)."
+            },
+            {
+                question: "If pipe diameter doubles, how does velocity change for constant flow rate?",
+                options: [
+                    "Doubles",
+                    "Halves",
+                    "Quadruples",
+                    "Reduces to 1/4"
+                ],
+                correct: 3,
+                explanation: "Area is proportional to diameter squared. If diameter doubles, area quadruples, so velocity reduces to 1/4 for constant Q."
+            },
+            {
+                question: "Which has higher viscosity at room temperature?",
+                options: [
+                    "Water",
+                    "Honey",
+                    "Alcohol",
+                    "Gasoline"
+                ],
+                correct: 1,
+                explanation: "Honey has much higher viscosity than water, alcohol, or gasoline at room temperature."
+            },
+            {
+                question: "What is the SI unit of viscosity?",
+                options: [
+                    "Pascal (Pa)",
+                    "Newton (N)",
+                    "Pascal-second (Pa·s)",
+                    "Joule (J)"
+                ],
+                correct: 2,
+                explanation: "Viscosity SI unit is Pascal-second (Pa·s), also equal to N·s/m²."
+            },
+            {
+                question: "In a horizontal pipe with narrowing, where is pressure highest?",
+                options: [
+                    "Wide section",
+                    "Narrow section",
+                    "Same everywhere",
+                    "Cannot determine"
+                ],
+                correct: 0,
+                explanation: "In a horizontal pipe, pressure is highest where velocity is lowest (wide section)."
+            },
+            {
+                question: "What does 'irrotational' mean in ideal fluid assumptions?",
+                options: [
+                    "No viscosity",
+                    "Constant density",
+                    "No angular momentum",
+                    "Constant velocity"
+                ],
+                correct: 2,
+                correct: 2,
+                explanation: "Irrotational means the fluid has no angular momentum about any point (no turbulence)."
+            },
+            {
+                question: "Which equation represents conservation of mass for incompressible flow?",
+                options: [
+                    "Bernoulli's equation",
+                    "Continuity equation",
+                    "Reynolds equation",
+                    "Viscosity equation"
+                ],
+                correct: 1,
+                explanation: "The continuity equation (A₁v₁ = A₂v₂) represents conservation of mass for incompressible fluids."
+            },
+            {
+                question: "What happens to Reynolds number if viscosity increases?",
+                options: [
+                    "Increases",
+                    "Decreases",
+                    "Remains constant",
+                    "Becomes zero"
+                ],
+                correct: 1,
+                explanation: "Re = (d × v × ρ)/η, so if viscosity (η) increases, Reynolds number decreases."
+            },
+            {
+                question: "Which application uses Bernoulli's principle?",
+                options: [
+                    "Hydraulic lift",
+                    "Venturi meter",
+                    "Mercury barometer",
+                    "All of the above"
+                ],
+                correct: 1,
+                explanation: "Venturi meters use Bernoulli's principle to measure flow rate. Hydraulic lifts use Pascal's principle."
+            }
+        ];
+
+        // Quiz functionality
+        document.getElementById('startQuiz').addEventListener('click', startQuiz);
+        document.getElementById('submitQuiz').addEventListener('click', submitQuiz);
+
+        let timeLeft = 20 * 60; // 20 minutes in seconds
+        let timerInterval;
+        let userAnswers = [];
+
+        function startQuiz() {
+            document.getElementById('startQuiz').classList.add('hidden');
+            document.getElementById('quizContainer').classList.remove('hidden');
+            
+            // Display questions
+            const questionsContainer = document.getElementById('questions');
+            quizQuestions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    <h3>Question ${index + 1}</h3>
+                    <p>${q.question}</p>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <div class="option" data-question="${index}" data-option="${optIndex}">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            // Add event listeners to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+
+            // Start timer
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Initialize user answers array
+            userAnswers = new Array(quizQuestions.length).fill(-1);
+        }
+
+        function selectOption(e) {
+            const questionIndex = parseInt(e.target.getAttribute('data-question'));
+            const optionIndex = parseInt(e.target.getAttribute('data-option'));
+            
+            // Remove selected class from all options in this question
+            const options = document.querySelectorAll(`.option[data-question="${questionIndex}"]`);
+            options.forEach(opt => opt.classList.remove('selected'));
+            
+            // Add selected class to clicked option
+            e.target.classList.add('selected');
+            
+            // Store user's answer
+            userAnswers[questionIndex] = optionIndex;
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }
+
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            
+            // Calculate score
+            let correctCount = 0;
+            quizQuestions.forEach((q, index) => {
+                if (userAnswers[index] === q.correct) {
+                    correctCount++;
+                }
+            });
+            
+            const score = correctCount;
+            const percentage = Math.round((correctCount / quizQuestions.length) * 100);
+            
+            // Display results
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.classList.remove('hidden');
+            
+            // Generate feedback
+            let strengths = [];
+            let improvements = [];
+            
+            // Analyze performance by category
+            let reynoldsCorrect = 0, reynoldsTotal = 0;
+            let continuityCorrect = 0, continuityTotal = 0;
+            let bernoulliCorrect = 0, bernoulliTotal = 0;
+            let viscosityCorrect = 0, viscosityTotal = 0;
+            
+            quizQuestions.forEach((q, index) => {
+                // Categorize questions
+                const questionText = q.question.toLowerCase();
+                if (questionText.includes("reynolds") || questionText.includes("laminar") || questionText.includes("turbulent")) {
+                    reynoldsTotal++;
+                    if (userAnswers[index] === q.correct) reynoldsCorrect++;
+                } else if (questionText.includes("continuity") || questionText.includes("flow rate") || questionText.includes("a₁v₁")) {
+                    continuityTotal++;
+                    if (userAnswers[index] === q.correct) continuityCorrect++;
+                } else if (questionText.includes("bernoulli") || questionText.includes("pressure") || questionText.includes("velocity increase")) {
+                    bernoulliTotal++;
+                    if (userAnswers[index] === q.correct) bernoulliCorrect++;
+                } else if (questionText.includes("viscosity") || questionText.includes("ideal fluid")) {
+                    viscosityTotal++;
+                    if (userAnswers[index] === q.correct) viscosityCorrect++;
+                }
+            });
+            
+            // Determine strengths and areas for improvement
+            if (reynoldsTotal > 0 && reynoldsCorrect / reynoldsTotal >= 0.7) strengths.push("understanding Reynolds number and flow types");
+            else if (reynoldsTotal > 0) improvements.push("reviewing Reynolds number calculations and flow classification");
+            
+            if (continuityTotal > 0 && continuityCorrect / continuityTotal >= 0.7) strengths.push("knowledge of continuity equation and flow rate");
+            else if (continuityTotal > 0) improvements.push("studying the continuity equation and its applications");
+            
+            if (bernoulliTotal > 0 && bernoulliCorrect / bernoulliTotal >= 0.7) strengths.push("understanding Bernoulli's principle");
+            else if (bernoulliTotal > 0) improvements.push("reviewing Bernoulli's equation and its applications");
+            
+            if (viscosityTotal > 0 && viscosityCorrect / viscosityTotal >= 0.7) strengths.push("understanding viscosity and ideal fluids");
+            else if (viscosityTotal > 0) improvements.push("studying viscosity and ideal fluid assumptions");
+            
+            // If no specific strengths identified, add generic ones
+            if (strengths.length === 0) {
+                strengths = ["basic understanding of fluid mechanics concepts"];
+            }
+            
+            // Generate detailed feedback with explanations for incorrect answers
+            let detailedFeedback = "<h3>Question Review</h3>";
+            quizQuestions.forEach((q, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === q.correct;
+                
+                detailedFeedback += `
+                    <div class="feedback">
+                        <p><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                        <p>Your answer: ${userAnswer !== -1 ? q.options[userAnswer] : "Not answered"} 
+                        ${isCorrect ? '<span style="color:green">✓ Correct</span>' : '<span style="color:red">✗ Incorrect</span>'}</p>
+                        ${!isCorrect ? `<p>Correct answer: ${q.options[q.correct]}</p>` : ''}
+                        <p><strong>Explanation:</strong> ${q.explanation}</p>
+                    </div>
+                `;
+            });
+            
+            resultsContainer.innerHTML = `
+                <h2>Quiz Results</h2>
+                <div class="score">${score}/${quizQuestions.length} (${percentage}%)</div>
+                
+                <div class="feedback">
+                    <h3>Performance Analysis</h3>
+                    <p><span class="strength">Strengths:</span> ${strengths.join(', ')}</p>
+                    <p><span class="improvement">Areas for Improvement:</span> ${improvements.join(', ')}</p>
+                    
+                    <h4>How to Improve:</h4>
+                    <ul>
+                        <li>Review Reynolds number calculations and flow classification</li>
+                        <li>Practice continuity equation problems with changing pipe diameters</li>
+                        <li>Study Bernoulli's principle applications in real-world examples</li>
+                        <li>Watch the recommended videos on Fluid Mechanics</li>
+                    </ul>
+                </div>
+                
+                <p>${percentage >= 80 ? 'Excellent work! You have mastered Fluid Mechanics concepts.' : 
+                    percentage >= 60 ? 'Good job! You understand the key concepts but could benefit from more practice.' : 
+                    'Keep studying! Review the material and try the quiz again to improve your understanding.'}</p>
+                
+                ${detailedFeedback}
+                
+                <button id="retryQuiz" class="btn">Retry Quiz</button>
+            `;
+            
+            document.getElementById('retryQuiz').addEventListener('click', function() {
+                location.reload();
+            });
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
